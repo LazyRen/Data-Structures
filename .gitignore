@@ -1,5 +1,5 @@
 # compiled source
-*.com *.class *.dll *.exe *.o *.so *.out
+*.com *.class *.dll *.exe *.o *.so *.out *.gch
 
 # Packages
 *.7z *.dmg *.gz *.iso *.jar *.rar *.tar *.zip
