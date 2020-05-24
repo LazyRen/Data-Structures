@@ -60,6 +60,7 @@ public:
   inline bool operator>=(const Pair& other) const { return !(*this < other); }
 };
 
+// comment below function if overloading conflict happens.(using namespace std;)
 template <typename U1, typename U2>
 inline Pair<U1,U2> make_pair(U1&& x, U2&& y) {
   return Pair<U1,U2> {x, y};

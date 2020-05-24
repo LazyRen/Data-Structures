@@ -11,13 +11,12 @@ private:
   static constexpr size_type DEFAULT_CAP = 32;
 
 public:
-  Vector(size_type cap = DEFAULT_CAP) : arr{new T[cap]}, _size{0}, _capacity{cap} {}
-  Vector(const Vector<T>& v) : arr{new T[v._capacity]}, _size{v._size}, _capacity{v._capacity} {
+  Vector(size_type cap = DEFAULT_CAP) : arr(new T[cap]), _size(0), _capacity(cap) {}
+  Vector(const Vector& v) : arr(new T[v._capacity]), _size(v._size), _capacity(v._capacity) {
     for (size_type i = 0; i < _size; i++)
       arr[i] = v[i];
   }
-  Vector(Vector<T>&& v) : arr{std::move(v.arr)}, _size{std::move(v._size)}, _capacity{std::move(v._capacity)} {
-
+  Vector(Vector&& v) : arr(std::move(v.arr)), _size(std::move(v._size)), _capacity(std::move(v._capacity)) {
     v.arr = nullptr;
     v._size = 0;
     v._capacity = 0;
@@ -25,7 +24,7 @@ public:
 
   ~Vector() { delete[] arr; }
 
-  Vector<T>& operator=(const Vector<T>& other) {
+  Vector& operator=(const Vector& other) {
     if (this != &other) {
       if (_capacity < other._capacity) {
         delete[] arr;
@@ -38,7 +37,7 @@ public:
     }
     return *this;
   }
-  Vector<T>& operator=(Vector<T>&& other) {
+  Vector& operator=(Vector&& other) {
     swap(arr, other.arr);
     swap(_size, other._size);
     swap(_capacity, other._capacity);
@@ -46,16 +45,16 @@ public:
     return *this;
   }
 
-  T& front() { return arr[0]; }
-  const T& front() const { return arr[0]; }
+  inline T& front() { return arr[0]; }
+  const inline T& front() const { return arr[0]; }
 
-  T& back() { return arr[_size - 1]; }
-  const T& back() const { return arr[_size - 1]; }
+  inline T& back() { return arr[_size - 1]; }
+  const inline T& back() const { return arr[_size - 1]; }
 
-  T& operator[](size_type idx) { return arr[idx]; }
-  const T& operator[](size_type idx) const { return arr[idx]; }
+  inline T& operator[](size_type idx) { return arr[idx]; }
+  const inline T& operator[](size_type idx) const { return arr[idx]; }
 
-  void push_back(const T& value) {
+  void push_back(const T& val) {
     if (_size >= _capacity) {
       if (_capacity < DEFAULT_CAP)
         _capacity = DEFAULT_CAP;
@@ -67,7 +66,21 @@ public:
       delete[] arr;
       arr = t_arr;
     }
-    arr[_size++] = value;
+    arr[_size++] = val;
+  }
+  void push_back(T&& val) {
+    if (_size >= _capacity) {
+      if (_capacity < DEFAULT_CAP)
+        _capacity = DEFAULT_CAP;
+      else
+        _capacity *= 2;
+      T *t_arr = new T[_capacity];
+      for (size_type i = 0; i < _size; i++)
+        t_arr[i] = arr[i];
+      delete[] arr;
+      arr = t_arr;
+    }
+    arr[_size++] = std::move(val);
   }
 
   void pop_back() { _size = _size > 0 ? _size - 1 : 0; }
@@ -93,7 +106,7 @@ public:
     _capacity = n;
   }
 
-  void swap(Vector<T>& other) {
+  void swap(Vector& other) {
     std::swap(arr, other.arr);
     std::swap(_size, other._size);
     std::swap(_capacity, other._capacity);
