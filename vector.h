@@ -49,8 +49,8 @@ public:
   T& front() { return arr[0]; }
   const T& front() const { return arr[0]; }
 
-  T& back() const { return arr[_size - 1]; }
-  const T& back() { return arr[_size - 1]; }
+  T& back() { return arr[_size - 1]; }
+  const T& back() const { return arr[_size - 1]; }
 
   T& operator[](size_type idx) { return arr[idx]; }
   const T& operator[](size_type idx) const { return arr[idx]; }
@@ -103,6 +103,39 @@ public:
   inline size_type size() const { return _size; }
   inline bool empty() const { return _size == 0; }
   void clear() { _size = 0; }
+
+  inline bool operator==(const Vector& other) const {
+    if (_size != other._size)
+      return false;
+    for (size_type i = 0; i < _size; i++)
+      if (arr[i] != other[i])
+        return false;
+    return true;
+  }
+  inline bool operator!=(const Vector& other) const { return !(*this == other); }
+  inline bool operator< (const Vector& other) const {
+    bool is_all_same = true;
+    size_type min_size = _size < other._size ? _size : other._size;
+    size_type idx = 0;
+    for (; idx < min_size; idx++) {
+      if (arr[idx] != other[idx]) {
+        is_all_same = false;
+        break;
+      }
+    }
+
+    if (is_all_same) {
+      if (_size < other._size)
+        return true;
+    } else {
+      if (arr[idx] < other[idx])
+        return true;
+    }
+    return false;
+  }
+  inline bool operator<=(const Vector& other) const { return !(other < *this); }
+  inline bool operator> (const Vector& other) const { return (other < *this); }
+  inline bool operator>=(const Vector& other) const { return !(*this < other); }
 };
 
 #endif
