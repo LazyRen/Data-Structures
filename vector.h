@@ -38,9 +38,9 @@ public:
     return *this;
   }
   Vector& operator=(Vector&& other) {
-    swap(arr, other.arr);
-    swap(_size, other._size);
-    swap(_capacity, other._capacity);
+    std::swap(arr, other.arr);
+    std::swap(_size, other._size);
+    std::swap(_capacity, other._capacity);
     other._size = 0;
     return *this;
   }
