@@ -14,11 +14,12 @@ private:
 public:
   Heap(bool is_max_heap = true) : arr{new T[DEFAULT_CAP]}, _size{0}, _capacity{DEFAULT_CAP}, is_max_heap{is_max_heap} {}
   Heap(T inp[], size_type length, bool is_max_heap = true) : arr{nullptr}, _size{length}, _capacity{DEFAULT_CAP}, is_max_heap{is_max_heap} {
-    heapify(inp, length, is_max_heap);
+    heapify(inp, length);
   }
   ~Heap() { delete[] arr; }
 
   void heapify(T inp[], size_type length, bool is_max_heap = true) {
+    this->is_max_heap = is_max_heap;
     if (length > _capacity) {
       while (length > _capacity)
         _capacity *= 2;
