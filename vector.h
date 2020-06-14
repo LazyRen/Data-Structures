@@ -1,5 +1,7 @@
 #ifndef _VECTOR_H_
 #define _VECTOR_H_
+#include <cstddef>
+#include <utility>
 
 template <typename T>
 class  Vector {
@@ -85,14 +87,17 @@ public:
 
   void pop_back() { _size = _size > 0 ? _size - 1 : 0; }
 
-  void resize(size_type n) {
+  void resize(size_type n, T val = T()) {
     T *t_arr = new T[n];
     _size = _size < n ? _size : n;
     _capacity = n;
     for (size_type i = 0; i < _size; i++)
       t_arr[i] = arr[i];
+    for (size_type i = _size; i < _capacity; i++)
+      t_arr[i] = val;
     delete[] arr;
     arr = t_arr;
+    _size = n;
   }
 
   void reserve(size_type n) {
