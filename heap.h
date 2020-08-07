@@ -1,5 +1,6 @@
 #ifndef _HEAP_H_
 #define _HEAP_H_
+#include <stdexcept>
 
 template <typename T>
 class Heap {
