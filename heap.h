@@ -75,12 +75,15 @@ public:
     _capacity = cap;
   }
 
-  void clear(bool is_max_heap = true) {
+  void clear(bool is_max_heap) {
     delete[] arr;
     arr = new T[DEFAULT_CAP];
     _size = 0;
     _capacity = DEFAULT_CAP;
     this->is_max_heap = is_max_heap;
+  }
+  void clear() {
+    clear(is_max_heap);
   }
 
   inline size_type size() const { return _size; }
@@ -96,7 +99,7 @@ private:
     if (is_max_heap)
       return a < b;
     else
-      return a > b;
+      return b < a;
   }
 
   inline void swap(T& a, T& b) {
