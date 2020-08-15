@@ -47,6 +47,10 @@ public:
     return *this;
   }
 
+  inline T* begin() const { return arr; }
+
+  inline T* end() const { return arr + _size; }
+
   inline T& front() { return arr[0]; }
   const inline T& front() const { return arr[0]; }
 
