@@ -5,34 +5,33 @@
 template <typename T>
 class Heap {
 private:
-  using size_type = size_t;
+  static constexpr size_t DEFAULT_CAP = 32;
   T* arr;
-  size_type _size;
-  size_type _capacity;
+  size_t m_size;
+  size_t m_capacity;
   bool is_max_heap;
-  static constexpr size_type DEFAULT_CAP = 32;
 
 public:
-  Heap(bool is_max_heap = true) : arr{new T[DEFAULT_CAP]}, _size{0}, _capacity{DEFAULT_CAP}, is_max_heap{is_max_heap} {}
-  Heap(T inp[], size_type length, bool is_max_heap = true) : arr{nullptr}, _size{length}, _capacity{DEFAULT_CAP}, is_max_heap{is_max_heap} {
+  Heap(bool is_max_heap = true) : arr{new T[DEFAULT_CAP]}, m_size{0}, m_capacity{DEFAULT_CAP}, is_max_heap{is_max_heap} {}
+  Heap(T inp[], size_t length, bool is_max_heap = true) : arr{nullptr}, m_size{length}, m_capacity{DEFAULT_CAP}, is_max_heap{is_max_heap} {
     heapify(inp, length);
   }
   ~Heap() { delete[] arr; }
 
-  void heapify(T inp[], size_type length, bool is_max_heap = true) {
+  void heapify(T inp[], size_t length, bool is_max_heap = true) {
     this->is_max_heap = is_max_heap;
-    if (length > _capacity) {
-      while (length > _capacity)
-        _capacity *= 2;
+    if (length > m_capacity) {
+      while (length > m_capacity)
+        m_capacity *= 2;
       delete[] arr;
-      arr = new T[_capacity];
+      arr = new T[m_capacity];
     }
 
-    for (size_type i = 0; i < length; i++)
+    for (size_t i = 0; i < length; i++)
       arr[i] = inp[i];
 
-    _size = length;
-    size_type cur = getParent(_size - 1);
+    m_size = length;
+    size_t cur = getParent(m_size - 1);
 
     while (cur > 0)
       siftDown(cur--);
@@ -40,80 +39,80 @@ public:
   }
 
   void push(T item) {
-    if (_size == _capacity) {
-      _capacity *= 2;
-      T *tmp = new T[_capacity];
-      for (size_type i = 0; i < _size; i++)
+    if (m_size == m_capacity) {
+      m_capacity *= 2;
+      T *tmp = new T[m_capacity];
+      for (size_t i = 0; i < m_size; i++)
         tmp[i] = arr[i];
       delete[] arr;
       arr = tmp;
     }
-    arr[_size] = item;
-    siftUp(_size++);
+    arr[m_size] = item;
+    siftUp(m_size++);
   }
 
   void pop() {
-    if (_size == 0)
+    if (m_size == 0)
       throw std::out_of_range("Empty heap");
-    arr[0] = arr[--_size];
+    arr[0] = arr[--m_size];
     siftDown(0);
   }
 
   T top() const {
-    if (_size == 0)
+    if (m_size == 0)
       throw std::out_of_range("Empty heap");
     return arr[0];
   }
 
-  void reserve(size_type cap) {
-    if (_capacity >= cap)
+  void reserve(size_t cap) {
+    if (m_capacity >= cap)
       return;
     T *tmp = new T[cap];
-    for (size_type i = 0; i < _size; i++)
+    for (size_t i = 0; i < m_size; i++)
       tmp[i] = arr[i];
     delete[] arr;
     arr = tmp;
-    _capacity = cap;
+    m_capacity = cap;
   }
 
   void clear(bool is_max_heap) {
-    delete[] arr;
-    arr = new T[DEFAULT_CAP];
-    _size = 0;
-    _capacity = DEFAULT_CAP;
+    if (m_capacity != DEFAULT_CAP) {
+      delete[] arr;
+      arr = new T[DEFAULT_CAP];
+      m_capacity = DEFAULT_CAP;
+    }
+    m_size = 0;
     this->is_max_heap = is_max_heap;
   }
-  void clear() {
-    clear(is_max_heap);
-  }
+  void clear() { clear(is_max_heap); }
 
-  inline size_type size() const { return _size; }
-  inline size_type capacity() const { return _capacity; }
-  inline bool empty() const { return _size == 0; }
+  size_t size() const { return m_size; }
+  size_t capacity() const { return m_capacity; }
+  bool empty() const { return m_size == 0; }
 
 private:
-  inline size_type getParent(size_type idx) const { return (idx - 1) >> 1; }
-  inline size_type getLeftChild(size_type idx) const { return (idx << 1) + 1; }
-  inline size_type getRightChild(size_type idx) const { return (idx << 1) + 2; }
+  size_t getParent(size_t idx) const { return (idx - 1) >> 1; }
+  size_t getLeftChild(size_t idx) const { return (idx << 1) + 1; }
+  size_t getRightChild(size_t idx) const { return (idx << 1) + 2; }
 
-  inline bool needToSwap(T& a, T& b) const {
+  bool needToSwap(T& a, T& b) const {
     if (is_max_heap)
       return a < b;
     else
       return b < a;
   }
 
-  inline void swap(T& a, T& b) {
+  void swap(T& a, T& b) {
     T tmp = a;
     a = b;
     b = tmp;
   }
 
-  void siftUp(size_type cur) {
+  void siftUp(size_t cur) {
     while (true) {
       if (cur == 0)
         break;
-      size_type parent = getParent(cur);
+      size_t parent = getParent(cur);
       if (needToSwap(arr[parent], arr[cur]))
         swap(arr[cur], arr[parent]);
       else
@@ -122,14 +121,14 @@ private:
     }
   }
 
-  void siftDown(size_type cur) {
-    while (getLeftChild(cur) < _size) {
-      size_type left = getLeftChild(cur), right = getRightChild(cur);
-      size_type to_swap = cur;
+  void siftDown(size_t cur) {
+    while (getLeftChild(cur) < m_size) {
+      size_t left = getLeftChild(cur), right = getRightChild(cur);
+      size_t to_swap = cur;
 
       if (needToSwap(arr[to_swap], arr[left]))
         to_swap = left;
-      if (right < _size && needToSwap(arr[to_swap], arr[right]))
+      if (right < m_size && needToSwap(arr[to_swap], arr[right]))
         to_swap = right;
 
       if (to_swap != cur) {
